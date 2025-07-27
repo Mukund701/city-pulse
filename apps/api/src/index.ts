@@ -54,17 +54,13 @@ app.get('/api/cities/by-name/:name', async (req: Request, res: Response) => {
 app.get('/api/events', async (req: Request, res: Response) => {
   try {
     const { cityId } = req.query;
-
-    // Type-safe check for cityId
     if (typeof cityId !== 'string') {
       return res.status(400).json({ error: 'A valid cityId query parameter is required.' });
     }
-    
     const parsedCityId = parseInt(cityId, 10);
     if (isNaN(parsedCityId)) {
-        return res.status(400).json({ error: 'cityId must be a valid number.' });
+      return res.status(400).json({ error: 'cityId must be a valid number.' });
     }
-
     const events = await prisma.event.findMany({
       where: { cityId: parsedCityId },
       orderBy: { eventDate: 'asc' },
@@ -121,14 +117,12 @@ app.post('/api/events', async (req: Request, res: Response) => {
   try {
     const { title, description, category, location, date, imageUrl, cityId } = req.body;
     if (!title || !category || !date || !location || !cityId) {
-        return res.status(400).json({ error: 'Missing required event fields.' });
+      return res.status(400).json({ error: 'Missing required event fields.' });
     }
-
     const parsedCityId = parseInt(cityId, 10);
     if (isNaN(parsedCityId)) {
-        return res.status(400).json({ error: 'cityId must be a valid number.' });
+      return res.status(400).json({ error: 'cityId must be a valid number.' });
     }
-
     const uppercaseCategory = category.toUpperCase();
     const validatedCategory = Object.values(EventCategory).includes(uppercaseCategory as EventCategory)
       ? uppercaseCategory as EventCategory
