@@ -54,11 +54,19 @@ app.get('/api/cities/by-name/:name', async (req: Request, res: Response) => {
 app.get('/api/events', async (req: Request, res: Response) => {
   try {
     const { cityId } = req.query;
-    if (!cityId) {
-      return res.status(400).json({ error: 'A cityId query parameter is required.' });
+
+    // Type-safe check for cityId
+    if (typeof cityId !== 'string') {
+      return res.status(400).json({ error: 'A valid cityId query parameter is required.' });
     }
+    
+    const parsedCityId = parseInt(cityId, 10);
+    if (isNaN(parsedCityId)) {
+        return res.status(400).json({ error: 'cityId must be a valid number.' });
+    }
+
     const events = await prisma.event.findMany({
-      where: { cityId: parseInt(cityId as string) },
+      where: { cityId: parsedCityId },
       orderBy: { eventDate: 'asc' },
     });
     res.json(events);
@@ -115,6 +123,12 @@ app.post('/api/events', async (req: Request, res: Response) => {
     if (!title || !category || !date || !location || !cityId) {
         return res.status(400).json({ error: 'Missing required event fields.' });
     }
+
+    const parsedCityId = parseInt(cityId, 10);
+    if (isNaN(parsedCityId)) {
+        return res.status(400).json({ error: 'cityId must be a valid number.' });
+    }
+
     const uppercaseCategory = category.toUpperCase();
     const validatedCategory = Object.values(EventCategory).includes(uppercaseCategory as EventCategory)
       ? uppercaseCategory as EventCategory
@@ -127,7 +141,7 @@ app.post('/api/events', async (req: Request, res: Response) => {
         category: validatedCategory,
         location,
         eventDate: new Date(date),
-        cityId: parseInt(cityId),
+        cityId: parsedCityId,
         imageUrl,
       },
     });
@@ -141,8 +155,8 @@ app.post('/api/events', async (req: Request, res: Response) => {
 // --- Search Endpoint ---
 app.get('/api/search', async (req: Request, res: Response) => {
   try {
-    const query = req.query.q as string;
-    if (!query) {
+    const query = req.query.q;
+    if (typeof query !== 'string' || !query) {
       return res.json([]);
     }
     const cities = await prisma.city.findMany({
