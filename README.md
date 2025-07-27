@@ -1,4 +1,5 @@
 City Pulse 🌆
+
 City Pulse is a full-stack, AI-powered web application designed to discover, track, and display events happening in cities around the world. It features a dynamic data pipeline that scrapes live event information, uses AI to structure the data, and displays it on a polished, interactive frontend.
 
 This project is fully functional in a local environment and is ready for its final deployment phase.
