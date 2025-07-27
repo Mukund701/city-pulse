@@ -1,0 +1,22 @@
+{
+  "name": "city-pulse-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A full-stack monorepo for city data management",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "structure": "node scripts/structure.js",
+    "dev:api": "npm run dev --workspace=apps/api",
+    "dev:web": "npm run dev --workspace=apps/web"
+  },
+  "devDependencies": {
+    "tree-cli": "^0.6.7"
+  },
+  "dependencies": {
+    "mapbox-gl": "^3.13.0",
+    "react-map-gl": "^8.0.4"
+  }
+}

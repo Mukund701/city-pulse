@@ -1,0 +1,7 @@
+# scraper/requirements.txt
+requests
+google-generativeai
+python-dotenv
+selenium
+webdriver-manager
+beautifulsoup4
