@@ -1,0 +1,37 @@
+# .github/workflows/scraper.yml
+
+name: Daily Event Scraper
+
+on:
+  # Allows you to run this workflow manually from the Actions tab on GitHub
+  workflow_dispatch:
+  
+  # Runs the job automatically every day at midnight UTC (5:30 AM IST)
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  scrape-events:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r scraper/requirements.txt
+
+      - name: Run Scraper for Varanasi
+        # This step runs your python script.
+        # It securely uses the secrets you stored in GitHub.
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: python scraper/scraper.py varanasi 29
